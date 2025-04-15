@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MovieApp</string>
     <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="title_activity_search_movie_screen">SearchMovieScreen</string>
 </resources>
