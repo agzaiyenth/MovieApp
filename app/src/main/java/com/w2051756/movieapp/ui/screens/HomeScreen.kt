@@ -2,13 +2,20 @@ package com.w2051756.movieapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.w2051756.movieapp.data.local.MovieDatabase
+import com.w2051756.movieapp.data.local.hardcodedMovies
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen() {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -21,7 +28,12 @@ fun HomeScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
-                onClick = { /* TODO: Navigate to Add Movies Screen */ },
+                onClick = {
+                    coroutineScope.launch {
+                        val db = MovieDatabase.getDatabase(context)
+                        db.movieDao().insertAll(hardcodedMovies)
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Add Movies to DB")

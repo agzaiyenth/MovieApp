@@ -17,6 +17,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField("String", "OMDB_API_KEY", "\"${project.properties["OMDB_API_KEY"]}\"")
+        buildConfigField("String", "OMDB_BASE_URL", "\"${project.properties["OMDB_BASE_URL"]}\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -51,6 +54,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
