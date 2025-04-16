@@ -16,11 +16,12 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "OMDB_API_KEY", "\"${project.properties["OMDB_API_KEY"]}\"")
         buildConfigField("String", "OMDB_BASE_URL", "\"${project.properties["OMDB_BASE_URL"]}\"")
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -41,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

@@ -12,11 +12,13 @@ import androidx.compose.ui.unit.dp
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.data.remote.MovieApiClient
 import com.w2051756.movieapp.model.Movie
+import com.w2051756.movieapp.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
-fun SearchMovieScreen() {
+fun SearchMovieScreen(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -48,8 +50,12 @@ fun SearchMovieScreen() {
                         title = movieTitle.text,
                         apiKey = BuildConfig.OMDB_API_KEY
                     )
-                    movie = fetchedMovie
-                    isLoading = false
+                    withContext(Dispatchers.Main) {
+                        movie = fetchedMovie
+                        isLoading = false
+
+
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -74,6 +80,13 @@ fun SearchMovieScreen() {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = onNavigateBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Back to Home")
+        }
 
         if (isLoading) {
             CircularProgressIndicator()
