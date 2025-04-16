@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
                 when (currentScreen) {
                     Screen.HOME -> HomeScreen(onNavigate = { newScreen -> currentScreen = newScreen })
                     Screen.SEARCH_MOVIE -> SearchMovieScreen(onNavigateBack = { currentScreen = Screen.HOME })
+                    Screen.SEARCH_ACTOR -> SearchActorScreen { currentScreen = Screen.HOME }
                 }
             }
         }

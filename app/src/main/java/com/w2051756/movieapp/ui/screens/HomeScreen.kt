@@ -52,11 +52,12 @@ fun HomeScreen(onNavigate: (Screen) -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { /* TODO: Navigate to Search for Actors Screen */ },
+                onClick = { onNavigate(Screen.SEARCH_ACTOR) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Search for Actors")
             }
+
         }
     }
 }
