@@ -10,6 +10,7 @@ import com.w2051756.movieapp.ui.screens.HomeScreen
 import com.w2051756.movieapp.ui.screens.Screen
 import com.w2051756.movieapp.ui.screens.SearchMovieScreen
 import com.w2051756.movieapp.ui.theme.MovieAppTheme
+import com.w2051756.movieapp.ui.screens.SearchActorScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

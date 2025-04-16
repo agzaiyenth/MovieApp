@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,9 +23,12 @@ fun SearchMovieScreen(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    var movieTitle by remember { mutableStateOf(TextFieldValue("")) }
-    var movie by remember { mutableStateOf<Movie?>(null) }
-    var isLoading by remember { mutableStateOf(false) }
+    var movieTitle by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(""))
+    }
+    var movie by rememberSaveable { mutableStateOf<Movie?>(null) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier

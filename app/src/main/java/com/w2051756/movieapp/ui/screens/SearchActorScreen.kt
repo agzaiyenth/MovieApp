@@ -44,9 +44,11 @@ fun SearchActorScreen(onNavigateBack: () -> Unit) {
                 coroutineScope.launch(Dispatchers.IO) {
                     val db = MovieDatabase.getDatabase(context)
                     val allMovies = db.movieDao().getAllMovies()
+                    val query = actorName.text.trim().lowercase()
                     val filtered = allMovies.filter {
-                        it.actors.contains(actorName.text, ignoreCase = true)
+                        it.actors.lowercase().contains(query)
                     }
+
                     results = filtered
                 }
             },
