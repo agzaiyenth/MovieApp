@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,8 +21,9 @@ fun SearchActorScreen(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    var actorName by remember { mutableStateOf(TextFieldValue("")) }
-    var results by remember { mutableStateOf<List<Movie>>(emptyList()) }
+    var actorName by rememberSaveable { mutableStateOf("") }
+    var results by rememberSaveable { mutableStateOf<List<Movie>>(emptyList()) }
+
 
     Column(
         modifier = Modifier
@@ -44,7 +46,7 @@ fun SearchActorScreen(onNavigateBack: () -> Unit) {
                 coroutineScope.launch(Dispatchers.IO) {
                     val db = MovieDatabase.getDatabase(context)
                     val allMovies = db.movieDao().getAllMovies()
-                    val query = actorName.text.trim().lowercase()
+                    val query = actorName.trim().lowercase()
                     val filtered = allMovies.filter {
                         it.actors.lowercase().contains(query)
                     }
@@ -76,7 +78,7 @@ fun SearchActorScreen(onNavigateBack: () -> Unit) {
                     Divider()
                 }
             }
-        } else if (actorName.text.isNotBlank()) {
+        } else if (actorName.isNotBlank()) {
             Text("No results found.")
         }
     }
