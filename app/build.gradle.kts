@@ -18,8 +18,12 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "OMDB_API_KEY", "\"${project.properties["OMDB_API_KEY"]}\"")
-        buildConfigField("String", "OMDB_BASE_URL", "\"${project.properties["OMDB_BASE_URL"]}\"")
+        val omdbApiKey: String = project.findProperty("OMDB_API_KEY") as? String ?: "null"
+        val omdbBaseUrl: String = project.findProperty("OMDB_BASE_URL") as? String ?: "null"
+
+        buildConfigField("String", "OMDB_API_KEY", "\"$omdbApiKey\"")
+        buildConfigField("String", "OMDB_BASE_URL", "\"$omdbBaseUrl\"")
+
 
 
     }
