@@ -1,6 +1,9 @@
 package com.w2051756.movieapp.ui.screens
 
-import android.content.Context
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import com.w2051756.movieapp.ui.theme.MovieAppTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,16 +13,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.w2051756.movieapp.BuildConfig
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.data.remote.MovieApiClient
 import com.w2051756.movieapp.model.Movie
-import com.w2051756.movieapp.BuildConfig
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+class SearchMovieScreen : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MovieAppTheme {
+                SearchMovieScreenContent(onNavigateBack = { finish() })
+            }
+        }
+    }
+}
+
+
 @Composable
-fun SearchMovieScreen(onNavigateBack: () -> Unit) {
+fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -28,7 +44,6 @@ fun SearchMovieScreen(onNavigateBack: () -> Unit) {
     }
     var movie by rememberSaveable { mutableStateOf<Movie?>(null) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
-
 
     Column(
         modifier = Modifier
@@ -57,8 +72,6 @@ fun SearchMovieScreen(onNavigateBack: () -> Unit) {
                     withContext(Dispatchers.Main) {
                         movie = fetchedMovie
                         isLoading = false
-
-
                     }
                 }
             },

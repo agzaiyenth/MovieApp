@@ -1,5 +1,8 @@
 package com.w2051756.movieapp.ui.screens
 
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,21 +12,33 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.model.Movie
+import com.w2051756.movieapp.ui.theme.MovieAppTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+class SearchActorScreen : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MovieAppTheme {
+                SearchActorScreenContent(
+                    onBackPressed = { finish() } // ✅ go back to previous activity
+                )
+            }
+        }
+    }
+}
+
 @Composable
-fun SearchActorScreen(onNavigateBack: () -> Unit) {
+fun SearchActorScreenContent(onBackPressed: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     var actorName by rememberSaveable { mutableStateOf("") }
-    var results by rememberSaveable { mutableStateOf<List<Movie>>(emptyList()) }
-
+    var results by remember { mutableStateOf<List<Movie>>(emptyList()) }
 
     Column(
         modifier = Modifier
@@ -47,6 +62,7 @@ fun SearchActorScreen(onNavigateBack: () -> Unit) {
                     val db = MovieDatabase.getDatabase(context)
                     val allMovies = db.movieDao().getAllMovies()
                     val query = actorName.trim().lowercase()
+
                     val filtered = allMovies.filter {
                         it.actors.lowercase().contains(query)
                     }
@@ -62,7 +78,7 @@ fun SearchActorScreen(onNavigateBack: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = onNavigateBack,
+            onClick = onBackPressed,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Back to Home")
