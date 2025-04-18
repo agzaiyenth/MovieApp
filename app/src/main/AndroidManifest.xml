@@ -15,6 +15,11 @@
         android:theme="@style/Theme.MovieApp"
         tools:targetApi="31">
         <activity
+            android:name=".ui.screens.SearchByTitleScreen"
+            android:exported="false"
+            android:label="@string/title_activity_search_by_title_screen"
+            android:theme="@style/Theme.MovieApp" />
+        <activity
             android:name=".ui.screens.SearchActorScreen"
             android:exported="false"
             android:label="@string/title_activity_search_actor_screen"

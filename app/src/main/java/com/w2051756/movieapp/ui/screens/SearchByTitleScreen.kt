@@ -1,0 +1,90 @@
+package com.w2051756.movieapp.ui.screens
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import com.w2051756.movieapp.ui.theme.MovieAppTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.w2051756.movieapp.BuildConfig
+import com.w2051756.movieapp.model.MovieShort
+import com.w2051756.movieapp.data.remote.MovieApiClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+
+class SearchByTitleActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MovieAppTheme {
+                SearchByTitleScreen(onNavigateBack = { finish() })
+            }
+        }
+    }
+}
+
+@Composable
+fun SearchByTitleScreen(onNavigateBack: () -> Unit) {
+    var query by remember { mutableStateOf("") }
+    var results by remember { mutableStateOf<List<MovieShort>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp)
+    ) {
+        TextField(
+            value = query,
+            onValueChange = { query = it },
+            label = { Text("Enter partial title") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                coroutineScope.launch(Dispatchers.IO) {
+                    isLoading = true
+                    val movies = MovieApiClient.searchMovies(query.trim(), BuildConfig.OMDB_API_KEY)
+                    results = movies
+                    isLoading = false
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Search Titles")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onNavigateBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Back to Home")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (isLoading) {
+            CircularProgressIndicator()
+        } else {
+            LazyColumn {
+                items(results) { movie ->
+                    Text("${movie.title} (${movie.year})")
+                    Divider()
+                }
+            }
+        }
+    }
+}

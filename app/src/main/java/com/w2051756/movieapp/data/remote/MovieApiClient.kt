@@ -9,6 +9,36 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 object MovieApiClient {
+    fun searchMovies(query: String, apiKey: String): List<MovieShort> {
+        val urlString = "https://www.omdbapi.com/?s=${query}&apikey=$apiKey"
+        val results = mutableListOf<MovieShort>()
+
+        try {
+            val url = URL(urlString)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "GET"
+
+            val reader = BufferedReader(InputStreamReader(connection.inputStream))
+            val response = reader.readText()
+            reader.close()
+
+            val json = JSONObject(response)
+            if (json.getString("Response") == "True") {
+                val searchArray = json.getJSONArray("Search")
+                for (i in 0 until searchArray.length()) {
+                    val item = searchArray.getJSONObject(i)
+                    val title = item.getString("Title")
+                    val year = item.getString("Year")
+                    results.add(MovieShort(title, year))
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return results
+    }
+
     fun fetchMovieByTitle(title: String, apiKey: String): Movie? {
         val urlString = "https://www.omdbapi.com/?t=${title.trim()}&apikey=$apiKey"
         try {

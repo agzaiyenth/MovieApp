@@ -3,4 +3,5 @@
     <string name="title_activity_home_screen">HomeScreen</string>
     <string name="title_activity_search_movie_screen">SearchMovieScreen</string>
     <string name="title_activity_search_actor_screen">SearchActorScreen</string>
+    <string name="title_activity_search_by_title_screen">SearchByTitleScreen</string>
 </resources>
