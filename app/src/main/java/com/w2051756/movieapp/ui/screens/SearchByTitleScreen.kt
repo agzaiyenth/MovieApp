@@ -80,10 +80,15 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
             CircularProgressIndicator()
         } else {
             LazyColumn {
-                items(results) { movie ->
-                    Text("${movie.title} (${movie.year})")
-                    Divider()
-                }
+                    if (!isLoading && results.isEmpty() && query.isNotBlank()) {
+                        item {
+                            Text("No results found.")
+                        }
+                    }
+                    items(results) { movie ->
+                        Text("${movie.title} (${movie.year})")
+                        Divider()
+                    }
             }
         }
     }

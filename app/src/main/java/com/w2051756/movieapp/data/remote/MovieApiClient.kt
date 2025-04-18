@@ -11,36 +11,44 @@ import java.net.URL
 
 object MovieApiClient {
     fun searchMovies(query: String): List<MovieShort> {
-        val urlString = "https://www.omdbapi.com/?s=${query}&apikey=4c7db8cd"
+        val apiKey = "4c7db8cd"
         val results = mutableListOf<MovieShort>()
+        var page = 1
 
         try {
-            val url = URL(urlString)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "GET"
+            while (true) {
+                val urlString = "https://www.omdbapi.com/?s=${query}&page=$page&apikey=$apiKey"
+                val url = URL(urlString)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
 
-            val reader = BufferedReader(InputStreamReader(connection.inputStream))
-            val response = reader.readText()
-            Log.d("MovieApiClient", "OMDb search response: $response")
-            reader.close()
+                val reader = BufferedReader(InputStreamReader(connection.inputStream))
+                val response = reader.readText()
+                Log.d("MovieApiClient", "Page $page response: $response")
+                reader.close()
 
-            val json = JSONObject(response)
-            if (json.getString("Response") == "True") {
-                val searchArray = json.getJSONArray("Search")
-                for (i in 0 until searchArray.length()) {
-                    val item = searchArray.getJSONObject(i)
-                    val title = item.getString("Title")
-                    val year = item.getString("Year")
-                    results.add(MovieShort(title, year))
+                val json = JSONObject(response)
+
+                if (json.getString("Response") == "True") {
+                    val searchArray = json.getJSONArray("Search")
+                    for (i in 0 until searchArray.length()) {
+                        val item = searchArray.getJSONObject(i)
+                        val title = item.getString("Title")
+                        val year = item.getString("Year")
+                        results.add(MovieShort(title, year))
+                    }
+                    page++
+                } else {
+                    break
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("MovieApiClient", "Exception: ${e.message}")
         }
-
 
         return results
     }
+
 
     fun fetchMovieByTitle(title: String): Movie? {
         val urlString = "https://www.omdbapi.com/?t=${title.trim()}&apikey=4c7db8cd"
