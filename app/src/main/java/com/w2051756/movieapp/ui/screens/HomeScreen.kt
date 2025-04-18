@@ -59,7 +59,6 @@ fun HomeScreen() {
 
             Button(
                 onClick = {
-                    // Navigate to SearchActorScreen using Intent
                     val intent = Intent(context, SearchActorScreen::class.java)
                     context.startActivity(intent)
                 },
@@ -67,6 +66,16 @@ fun HomeScreen() {
             ) {
                 Text("Search for Actors")
             }
+            Button(
+                onClick = {
+                    val intent = Intent(context, SearchByTitleActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Search Titles via API")
+            }
+
         }
     }
 }
