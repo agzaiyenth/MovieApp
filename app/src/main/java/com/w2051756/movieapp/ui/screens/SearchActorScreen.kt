@@ -25,7 +25,7 @@ class SearchActorScreen : ComponentActivity() {
         setContent {
             MovieAppTheme {
                 SearchActorScreenContent(
-                    onBackPressed = { finish() } // ✅ go back to previous activity
+                    onBackPressed = { finish() }
                 )
             }
         }
@@ -38,7 +38,7 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
 
     var actorName by rememberSaveable { mutableStateOf("") }
-    var results by remember { mutableStateOf<List<Movie>>(emptyList()) }
+    var results by rememberSaveable { mutableStateOf(emptyList<Movie>()) }
 
     Column(
         modifier = Modifier

@@ -9,9 +9,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.w2051756.movieapp.BuildConfig
 import com.w2051756.movieapp.model.MovieShort
 import com.w2051756.movieapp.data.remote.MovieApiClient
 import kotlinx.coroutines.Dispatchers
@@ -31,9 +31,10 @@ class SearchByTitleScreen : ComponentActivity() {
 
 @Composable
 fun SearchByTitle(onNavigateBack: () -> Unit) {
-    var query by remember { mutableStateOf("") }
-    var results by remember { mutableStateOf<List<MovieShort>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(false) }
+    var query by rememberSaveable { mutableStateOf("") }
+    var results by rememberSaveable { mutableStateOf(emptyList<MovieShort>()) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+
 
     val coroutineScope = rememberCoroutineScope()
 
