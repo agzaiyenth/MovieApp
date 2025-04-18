@@ -13,11 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.w2051756.movieapp.BuildConfig
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.data.remote.MovieApiClient
 import com.w2051756.movieapp.model.Movie
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,7 +30,6 @@ class SearchMovieScreen : ComponentActivity() {
         }
     }
 }
-
 
 @Composable
 fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
