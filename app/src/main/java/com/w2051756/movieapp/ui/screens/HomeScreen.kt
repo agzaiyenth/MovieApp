@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.w2051756.movieapp.ui.screens.SearchActorScreen
 import com.w2051756.movieapp.ui.screens.SearchMovieScreen
+import com.w2051756.movieapp.ui.screens.SearchByTitleScreen
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.data.local.hardcodedMovies
 import kotlinx.coroutines.launch
@@ -46,7 +47,6 @@ fun HomeScreen() {
 
             Button(
                 onClick = {
-                    // Navigate to SearchMovieScreen using Intent
                     val intent = Intent(context, SearchMovieScreen::class.java)
                     context.startActivity(intent)
                 },
@@ -68,7 +68,7 @@ fun HomeScreen() {
             }
             Button(
                 onClick = {
-                    val intent = Intent(context, SearchByTitleActivity::class.java)
+                    val intent = Intent(context, SearchByTitleScreen::class.java)
                     context.startActivity(intent)
                 },
                 modifier = Modifier.fillMaxWidth()

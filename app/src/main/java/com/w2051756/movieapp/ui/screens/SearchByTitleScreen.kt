@@ -18,19 +18,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class SearchByTitleActivity : ComponentActivity() {
+class SearchByTitleScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MovieAppTheme {
-                SearchByTitleScreen(onNavigateBack = { finish() })
+                SearchByTitle(onNavigateBack = { finish() })
             }
         }
     }
 }
 
 @Composable
-fun SearchByTitleScreen(onNavigateBack: () -> Unit) {
+fun SearchByTitle(onNavigateBack: () -> Unit) {
     var query by remember { mutableStateOf("") }
     var results by remember { mutableStateOf<List<MovieShort>>(emptyList()) }
     var isLoading by remember { mutableStateOf(false) }
@@ -55,7 +55,7 @@ fun SearchByTitleScreen(onNavigateBack: () -> Unit) {
             onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
                     isLoading = true
-                    val movies = MovieApiClient.searchMovies(query.trim(), BuildConfig.OMDB_API_KEY)
+                    val movies = MovieApiClient.searchMovies(query.trim())
                     results = movies
                     isLoading = false
                 }

@@ -66,8 +66,7 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
                 isLoading = true
                 coroutineScope.launch(Dispatchers.IO) {
                     val fetchedMovie = MovieApiClient.fetchMovieByTitle(
-                        title = movieTitle.text,
-                        apiKey = BuildConfig.OMDB_API_KEY
+                        title = movieTitle.text
                     )
                     withContext(Dispatchers.Main) {
                         movie = fetchedMovie
