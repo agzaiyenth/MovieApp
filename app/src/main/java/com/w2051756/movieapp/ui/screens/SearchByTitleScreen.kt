@@ -34,6 +34,8 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
     var query by rememberSaveable { mutableStateOf("") }
     var results by rememberSaveable { mutableStateOf(emptyList<MovieShort>()) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
+    var hasSearched by rememberSaveable { mutableStateOf(false) }
+
 
 
     val coroutineScope = rememberCoroutineScope()
@@ -59,6 +61,7 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
                     val movies = MovieApiClient.searchMovies(query.trim())
                     results = movies
                     isLoading = false
+                    hasSearched = true
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -81,7 +84,7 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
             CircularProgressIndicator()
         } else {
             LazyColumn {
-                    if (!isLoading && results.isEmpty() && query.isNotBlank()) {
+                    if (hasSearched && !isLoading && results.isEmpty() && query.isNotBlank()) {
                         item {
                             Text("No results found.")
                         }
