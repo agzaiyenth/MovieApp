@@ -1,6 +1,7 @@
 package com.w2051756.movieapp.ui.screens
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.w2051756.movieapp.ui.theme.MovieAppTheme
@@ -10,9 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.data.remote.MovieApiClient
 import com.w2051756.movieapp.model.Movie
@@ -35,78 +39,108 @@ class SearchMovieScreen : ComponentActivity() {
 fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
+    var hasSearched by rememberSaveable { mutableStateOf(false) }
     var movieTitle by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(""))
     }
     var movie by rememberSaveable { mutableStateOf<Movie?>(null) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
 
+    val buttonColors = ButtonDefaults.buttonColors(
+        containerColor = Color.LightGray,
+        contentColor = Color.Black
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(
+        Text(
+            text = "Search for a Movie",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        OutlinedTextField(
             value = movieTitle,
             onValueChange = { movieTitle = it },
             label = { Text("Enter movie title") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
                 isLoading = true
                 coroutineScope.launch(Dispatchers.IO) {
-                    val fetchedMovie = MovieApiClient.fetchMovieByTitle(
-                        title = movieTitle.text
-                    )
+                    val fetchedMovie = MovieApiClient.fetchMovieByTitle(movieTitle.text)
+                    hasSearched=true
                     withContext(Dispatchers.Main) {
-                        movie = fetchedMovie
                         isLoading = false
+                        if (fetchedMovie != null) {
+                            movie = fetchedMovie
+                        } else {
+                            movie = null
+                            Toast.makeText(context, "No results found", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = buttonColors
         ) {
-            Text("Retrieve Movie")
+            Text("Retrieve Movie", fontSize = 18.sp)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
                 movie?.let {
                     coroutineScope.launch(Dispatchers.IO) {
                         MovieDatabase.getDatabase(context).movieDao().insertMovie(it)
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Saved to DB", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             },
             enabled = movie != null,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = buttonColors
         ) {
-            Text("Save movie to Database")
+            Text("Save movie to Database", fontSize = 18.sp)
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = onNavigateBack,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = buttonColors
         ) {
-            Text("Back to Home")
+            Text("Back to Home", fontSize = 18.sp)
         }
 
         if (isLoading) {
+            Spacer(modifier = Modifier.height(16.dp))
             CircularProgressIndicator()
         } else {
-            movie?.let {
-                MovieDetails(movie = it)
+            if (movie != null) {
+                Spacer(modifier = Modifier.height(24.dp))
+                Divider(thickness = 2.dp, color = Color.DarkGray)
+                Spacer(modifier = Modifier.height(16.dp))
+                MovieDetails(movie = movie!!)
+            } else if (movieTitle.text.isNotBlank() && hasSearched) {
+                Text(
+                    text = "No results found for \"${movieTitle.text}\"",
+                    fontSize = 16.sp,
+                    color = Color.Red
+                )
             }
         }
+
     }
 }
+
