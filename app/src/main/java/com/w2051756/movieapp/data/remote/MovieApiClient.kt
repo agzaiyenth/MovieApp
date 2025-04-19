@@ -14,9 +14,10 @@ object MovieApiClient {
         val apiKey = "4c7db8cd"
         val results = mutableListOf<MovieShort>()
         var page = 1
+        val maxPages = 5
 
         try {
-            while (true) {
+            while (page <= maxPages) {
                 val urlString = "https://www.omdbapi.com/?s=${query}&page=$page&apikey=$apiKey"
                 val url = URL(urlString)
                 val connection = url.openConnection() as HttpURLConnection
@@ -35,7 +36,10 @@ object MovieApiClient {
                         val item = searchArray.getJSONObject(i)
                         val title = item.getString("Title")
                         val year = item.getString("Year")
-                        results.add(MovieShort(title, year))
+
+                        if (title.contains(query, ignoreCase = true)) {
+                            results.add(MovieShort(title, year))
+                        }
                     }
                     page++
                 } else {
@@ -48,6 +52,7 @@ object MovieApiClient {
 
         return results
     }
+
 
 
     fun fetchMovieByTitle(title: String): Movie? {

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Room
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.data.remote.MovieApiClient
 import com.w2051756.movieapp.model.Movie
@@ -108,7 +109,11 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
             onClick = {
                 movie?.let {
                     coroutineScope.launch(Dispatchers.IO) {
-                        MovieDatabase.getDatabase(context).movieDao().insertMovie(it)
+                        val db = Room.databaseBuilder(
+                            context,
+                            MovieDatabase::class.java,
+                            "movie_database"
+                        ).build().movieDao().insertMovie(it)
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Saved to DB", Toast.LENGTH_SHORT).show()
                         }

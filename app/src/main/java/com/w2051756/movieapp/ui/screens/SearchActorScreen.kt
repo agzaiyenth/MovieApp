@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Room
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.model.Movie
 import com.w2051756.movieapp.ui.theme.MovieAppTheme
@@ -77,7 +78,12 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
         Button(
             onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
-                    val db = MovieDatabase.getDatabase(context)
+                    val db = Room.databaseBuilder(
+                    context,
+                    MovieDatabase::class.java,
+                    "movie_database"
+                ).build()
+
                     val allMovies = db.movieDao().getAllMovies()
                     val query = actorName.trim().lowercase()
                     val filtered = allMovies.filter {

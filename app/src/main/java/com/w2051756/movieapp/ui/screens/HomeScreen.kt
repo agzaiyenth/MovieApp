@@ -2,6 +2,7 @@ package com.w2051756.movieapp.ui.screens
 
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -14,13 +15,20 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Room
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.data.local.hardcodedMovies
 import com.w2051756.movieapp.ui.screens.SearchActorScreen
 import com.w2051756.movieapp.ui.screens.SearchByTitleScreen
 import com.w2051756.movieapp.ui.screens.SearchMovieScreen
+import com.w2051756.movieapp.ui.screens.DatabaseViewScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.unit.DpOffset
 
 @Composable
 fun HomeScreen() {
@@ -29,10 +37,27 @@ fun HomeScreen() {
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        IconButton(
+            onClick = {
+                context.startActivity(Intent(context, DatabaseViewScreen::class.java))
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+                .size(56.dp)
+                .clip(CircleShape)
+                .background(Color.LightGray)
+        ) {
+            Icon(
+                imageVector = Icons.Default.List,
+                contentDescription = "View DB",
+                tint = Color.Black
+            )
+        }
+
+
+        // Main screen content
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -68,6 +93,7 @@ fun HomeScreen() {
     }
 }
 
+
 @Composable
 fun HomeButtons(context: android.content.Context, coroutineScope: CoroutineScope, modifier: Modifier) {
     val buttonColors = ButtonDefaults.buttonColors(
@@ -80,7 +106,11 @@ fun HomeButtons(context: android.content.Context, coroutineScope: CoroutineScope
     Button(
         onClick = {
             coroutineScope.launch {
-                val db = MovieDatabase.getDatabase(context)
+                val db = Room.databaseBuilder(
+                    context,
+                    MovieDatabase::class.java,
+                    "movie_database"
+                ).build()
                 db.movieDao().insertAll(hardcodedMovies)
                 Toast.makeText(context, "Successfully added to DB", Toast.LENGTH_SHORT).show()
             }

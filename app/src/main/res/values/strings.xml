@@ -4,4 +4,5 @@
     <string name="title_activity_search_movie_screen">SearchMovieScreen</string>
     <string name="title_activity_search_actor_screen">SearchActorScreen</string>
     <string name="title_activity_search_by_title_screen">SearchByTitleScreen</string>
+    <string name="title_activity_database_view_screen">DatabaseViewScreen</string>
 </resources>
