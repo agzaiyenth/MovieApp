@@ -36,7 +36,7 @@ class SearchActorScreen : ComponentActivity() {
 fun SearchActorScreenContent(onBackPressed: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
+    var hasSearched by rememberSaveable { mutableStateOf(false) }
     var actorName by rememberSaveable { mutableStateOf("") }
     var results by rememberSaveable { mutableStateOf(emptyList<Movie>()) }
 
@@ -62,11 +62,10 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
                     val db = MovieDatabase.getDatabase(context)
                     val allMovies = db.movieDao().getAllMovies()
                     val query = actorName.trim().lowercase()
-
                     val filtered = allMovies.filter {
                         it.actors.lowercase().contains(query)
                     }
-
+                    hasSearched = true
                     results = filtered
                 }
             },
@@ -94,7 +93,7 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
                     Divider()
                 }
             }
-        } else if (actorName.isNotBlank()) {
+        } else if (hasSearched && actorName.isNotBlank()) {
             Text("No results found.")
         }
     }
