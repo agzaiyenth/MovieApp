@@ -1,6 +1,7 @@
 package com.w2051756.movieapp.ui.screens
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -8,8 +9,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,6 +82,7 @@ fun HomeButtons(context: android.content.Context, coroutineScope: CoroutineScope
             coroutineScope.launch {
                 val db = MovieDatabase.getDatabase(context)
                 db.movieDao().insertAll(hardcodedMovies)
+                Toast.makeText(context, "Successfully added to DB", Toast.LENGTH_SHORT).show()
             }
         },
         modifier = modifier,
