@@ -66,10 +66,18 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
 
         OutlinedTextField(
             value = movieTitle,
-            onValueChange = { movieTitle = it },
+            onValueChange = {
+                movieTitle = it
+                hasSearched=false
+            },
+
+
+
+
             label = { Text("Enter movie title") },
             modifier = Modifier.fillMaxWidth(),
             textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
+
         )
 
         Button(

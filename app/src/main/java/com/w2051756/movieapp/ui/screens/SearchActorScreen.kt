@@ -65,7 +65,10 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
 
         OutlinedTextField(
             value = actorName,
-            onValueChange = { actorName = it },
+            onValueChange = {
+                actorName = it
+                hasSearched=false
+                            },
             label = { Text("Enter actor name") },
             modifier = Modifier.fillMaxWidth(),
             textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)

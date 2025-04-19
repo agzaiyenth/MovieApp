@@ -61,7 +61,10 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
 
         OutlinedTextField(
             value = query,
-            onValueChange = { query = it },
+            onValueChange = {
+                query = it
+                hasSearched=false
+                            },
             label = { Text("Enter partial title") },
             modifier = Modifier.fillMaxWidth(),
             textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
