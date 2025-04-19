@@ -41,14 +41,14 @@ fun HomeScreen() {
         ) {
             Text(
                 text = "Movie App",
-                fontSize = 32.sp, // Increased title font size
+                fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 32.dp)
             )
 
             if (isPortrait) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(24.dp), // More even spacing
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -74,7 +74,7 @@ fun HomeButtons(context: android.content.Context, coroutineScope: CoroutineScope
         contentColor = Color.Black
     )
 
-    val fontSize = 18.sp // Larger font for all buttons
+    val fontSize = 18.sp
 
     Button(
         onClick = {
