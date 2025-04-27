@@ -10,8 +10,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 object MovieApiClient {
+    val apiKey = "4c7db8cd"
     fun searchMovies(query: String): List<MovieShort> {
-        val apiKey = "4c7db8cd"
+
         val results = mutableListOf<MovieShort>()
         var page = 1
         val maxPages = 5
@@ -56,7 +57,7 @@ object MovieApiClient {
 
 
     fun fetchMovieByTitle(title: String): Movie? {
-        val urlString = "https://www.omdbapi.com/?t=${title.trim()}&apikey=4c7db8cd"
+        val urlString = "https://www.omdbapi.com/?t=${title.trim()}&apikey=$apiKey"
         try {
             val url = URL(urlString)
             val connection = url.openConnection() as HttpURLConnection
