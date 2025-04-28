@@ -35,11 +35,11 @@ fun MovieDetails(movie: Movie) {
 }
 
 @Composable
-fun DetailText(label: String, value: String) {
+fun DetailText(label: String, value: String, bold: Boolean = false) {
     Text(
         text = "$label: $value",
         fontSize = 18.sp,
-        fontWeight = FontWeight.Normal,
+        fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
         lineHeight = 22.sp
     )
 }
