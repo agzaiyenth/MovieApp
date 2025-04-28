@@ -1,14 +1,12 @@
 package com.w2051756.movieapp.ui.screens
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.w2051756.movieapp.ui.theme.MovieAppTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -18,10 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.w2051756.movieapp.model.MovieShort
 import com.w2051756.movieapp.data.remote.MovieApiClient
+import com.w2051756.movieapp.model.MovieShort
+import com.w2051756.movieapp.ui.theme.MovieAppTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchByTitleScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,30 +37,30 @@ class SearchByTitleScreen : ComponentActivity() {
 @Composable
 fun SearchByTitle(onNavigateBack: () -> Unit) {
     var query by rememberSaveable { mutableStateOf("") }
-    var searchQuery by rememberSaveable { mutableStateOf<String?>(null) } // NEW
-    var results by rememberSaveable { mutableStateOf(emptyList<MovieShort>()) }
+    var results by remember { mutableStateOf(emptyList<MovieShort>()) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var hasSearched by rememberSaveable { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
 
     val buttonColors = ButtonDefaults.buttonColors(
         containerColor = Color.LightGray,
         contentColor = Color.Black
     )
 
-    LaunchedEffect(searchQuery) {
-        if (searchQuery != null) {
+    // ✅ After rotation, re-trigger search ONLY if user already searched
+    LaunchedEffect(hasSearched) {
+        if (hasSearched && query.isNotBlank()) {
             isLoading = true
-            results = MovieApiClient.searchMovies(searchQuery!!.trim())
+            results = withContext(Dispatchers.IO) {
+                MovieApiClient.searchMovies(query.trim())
+            }
             isLoading = false
-            hasSearched = true
         }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -75,7 +75,7 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
             value = query,
             onValueChange = {
                 query = it
-                hasSearched = false
+                hasSearched = false // ❗ Reset because typing new query
             },
             label = { Text("Enter partial title") },
             modifier = Modifier.fillMaxWidth(),
@@ -85,7 +85,22 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
         Button(
             onClick = {
                 if (query.isNotBlank()) {
-                    searchQuery = query // TRIGGER the search
+                    coroutineScope.launch {
+                        try {
+                            isLoading = true
+                            Log.d("MovieApp", "Searching for: $query")
+                            results = withContext(Dispatchers.IO) {
+                                MovieApiClient.searchMovies(query.trim())
+                            }
+                            Log.d("MovieApp", "Search completed, ${results.size} results found")
+                        } catch (e: Exception) {
+                            Log.e("MovieApp", "Error fetching search results", e)
+                            results = emptyList()
+                        } finally {
+                            isLoading = false
+                            hasSearched = true // ❗ User officially searched
+                        }
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -102,11 +117,11 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
             Text("Back to Home", fontSize = 18.sp)
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         if (isLoading) {
             CircularProgressIndicator()
         } else {
-            Spacer(modifier = Modifier.height(8.dp))
-
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -134,4 +149,3 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
         }
     }
 }
-

@@ -19,6 +19,7 @@ object MovieApiClient {
 
         try {
             while (page <= maxPages) {
+                Log.d("MovieApiClient", "Searching for query: '$query' on page $page")
                 val urlString = "https://www.omdbapi.com/?s=${query}&page=$page&apikey=$apiKey"
                 val url = URL(urlString)
                 val connection = url.openConnection() as HttpURLConnection
