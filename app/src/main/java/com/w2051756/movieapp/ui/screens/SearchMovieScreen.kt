@@ -141,9 +141,7 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
             CircularProgressIndicator()
         } else {
             if (movie != null) {
-                Spacer(modifier = Modifier.height(24.dp))
-                Divider(thickness = 2.dp, color = Color.DarkGray)
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(14.dp))
                 MovieDetails(movie = movie!!)
             } else if (movieTitle.text.isNotBlank() && hasSearched) {
                 Text(

@@ -71,6 +71,11 @@ object MovieApiClient {
                 response.append(line)
             }
             reader.close()
+            //response
+            //title-chimpanzee
+            //"year"-"inasd"
+            //rated-3.5
+
 
             val json = JSONObject(response.toString())
 
