@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.w2051756.movieapp.ui.theme.MovieAppTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -40,6 +42,8 @@ class SearchMovieScreen : ComponentActivity() {
 fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
+
     var hasSearched by rememberSaveable { mutableStateOf(false) }
     var movieTitle by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(""))
@@ -55,6 +59,7 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -69,16 +74,11 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
             value = movieTitle,
             onValueChange = {
                 movieTitle = it
-                hasSearched=false
+                hasSearched = false
             },
-
-
-
-
             label = { Text("Enter movie title") },
             modifier = Modifier.fillMaxWidth(),
             textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
-
         )
 
         Button(
@@ -86,7 +86,7 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
                 isLoading = true
                 coroutineScope.launch(Dispatchers.IO) {
                     val fetchedMovie = MovieApiClient.fetchMovieByTitle(movieTitle.text)
-                    hasSearched=true
+                    hasSearched = true
                     withContext(Dispatchers.Main) {
                         isLoading = false
                         if (fetchedMovie != null) {
@@ -104,12 +104,11 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
             Text("Retrieve Movie", fontSize = 18.sp)
         }
 
-
         Button(
             onClick = {
                 movie?.let {
                     coroutineScope.launch(Dispatchers.IO) {
-                        val db = Room.databaseBuilder(
+                        Room.databaseBuilder(
                             context,
                             MovieDatabase::class.java,
                             "movie_database"
@@ -126,7 +125,6 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
         ) {
             Text("Save movie to Database", fontSize = 18.sp)
         }
-
 
         Button(
             onClick = onNavigateBack,
@@ -151,7 +149,5 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
                 )
             }
         }
-
     }
 }
-
