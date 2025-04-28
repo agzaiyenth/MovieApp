@@ -7,6 +7,8 @@ import com.w2051756.movieapp.ui.theme.MovieAppTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,20 +37,30 @@ class SearchByTitleScreen : ComponentActivity() {
 @Composable
 fun SearchByTitle(onNavigateBack: () -> Unit) {
     var query by rememberSaveable { mutableStateOf("") }
+    var searchQuery by rememberSaveable { mutableStateOf<String?>(null) } // NEW
     var results by rememberSaveable { mutableStateOf(emptyList<MovieShort>()) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var hasSearched by rememberSaveable { mutableStateOf(false) }
-
-    val coroutineScope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
 
     val buttonColors = ButtonDefaults.buttonColors(
         containerColor = Color.LightGray,
         contentColor = Color.Black
     )
 
+    LaunchedEffect(searchQuery) {
+        if (searchQuery != null) {
+            isLoading = true
+            results = MovieApiClient.searchMovies(searchQuery!!.trim())
+            isLoading = false
+            hasSearched = true
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -63,8 +75,8 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
             value = query,
             onValueChange = {
                 query = it
-                hasSearched=false
-                            },
+                hasSearched = false
+            },
             label = { Text("Enter partial title") },
             modifier = Modifier.fillMaxWidth(),
             textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
@@ -72,12 +84,8 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
 
         Button(
             onClick = {
-                coroutineScope.launch(Dispatchers.IO) {
-                    isLoading = true
-                    val movies = MovieApiClient.searchMovies(query.trim())
-                    results = movies
-                    isLoading = false
-                    hasSearched = true
+                if (query.isNotBlank()) {
+                    searchQuery = query // TRIGGER the search
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -126,3 +134,4 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
         }
     }
 }
+
