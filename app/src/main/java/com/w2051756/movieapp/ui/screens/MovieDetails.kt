@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Composable
+@@Composable
 fun MovieDetails(movie: Movie) {
     Column(
         modifier = Modifier
@@ -21,7 +21,7 @@ fun MovieDetails(movie: Movie) {
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        DetailText("Title", movie.title)
+        DetailText(label = "Title", value = movie.title, bold = true)   // 🔥 Make title bold
         DetailText("Year", movie.year)
         DetailText("Rated", movie.rated)
         DetailText("Released", movie.released)
