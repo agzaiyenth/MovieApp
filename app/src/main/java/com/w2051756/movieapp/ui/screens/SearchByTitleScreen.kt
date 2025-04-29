@@ -46,8 +46,7 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
         containerColor = Color.LightGray,
         contentColor = Color.Black
     )
-
-    // ✅ After rotation, re-trigger search ONLY if user already searched
+    
     LaunchedEffect(hasSearched) {
         if (hasSearched && query.isNotBlank()) {
             isLoading = true
@@ -75,7 +74,7 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
             value = query,
             onValueChange = {
                 query = it
-                hasSearched = false // ❗ Reset because typing new query
+                hasSearched = false
             },
             label = { Text("Enter partial title") },
             modifier = Modifier.fillMaxWidth(),
@@ -98,7 +97,7 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
                             results = emptyList()
                         } finally {
                             isLoading = false
-                            hasSearched = true // ❗ User officially searched
+                            hasSearched = true
                         }
                     }
                 }
