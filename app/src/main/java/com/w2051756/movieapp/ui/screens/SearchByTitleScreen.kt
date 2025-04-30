@@ -46,7 +46,7 @@ fun SearchByTitle(onNavigateBack: () -> Unit) {
         containerColor = Color.LightGray,
         contentColor = Color.Black
     )
-    
+
     LaunchedEffect(hasSearched) {
         if (hasSearched && query.isNotBlank()) {
             isLoading = true
