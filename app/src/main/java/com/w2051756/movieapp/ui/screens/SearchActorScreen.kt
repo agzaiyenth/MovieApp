@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.Room
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.model.Movie
 import com.w2051756.movieapp.ui.theme.MovieAppTheme
@@ -42,6 +41,7 @@ class SearchActorScreen : ComponentActivity() {
 fun SearchActorScreenContent(onBackPressed: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+
     var hasSearched by rememberSaveable { mutableStateOf(false) }
     var actorName by rememberSaveable { mutableStateOf("") }
     var results by rememberSaveable { mutableStateOf(emptyList<Movie>()) }
@@ -68,8 +68,8 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
             value = actorName,
             onValueChange = {
                 actorName = it
-                hasSearched=false
-                            },
+                hasSearched = false 
+            },
             label = { Text("Enter actor name") },
             modifier = Modifier.fillMaxWidth(),
             textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
@@ -99,8 +99,6 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
             Text("Search", fontSize = 18.sp)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Button(
             onClick = onBackPressed,
             modifier = Modifier.fillMaxWidth(),
@@ -108,8 +106,6 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
         ) {
             Text("Back to Home", fontSize = 18.sp)
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
 
         if (results.isNotEmpty()) {
             LazyColumn(
