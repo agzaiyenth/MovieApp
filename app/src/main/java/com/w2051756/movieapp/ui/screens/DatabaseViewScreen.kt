@@ -44,11 +44,7 @@ fun DatabaseScreenUI() {
 
     LaunchedEffect(true) {
         coroutineScope.launch(Dispatchers.IO) {
-            val db = Room.databaseBuilder(
-                context,
-                MovieDatabase::class.java,
-                "movie_database"
-            ).build()
+            val db = MovieDatabase.getInstance(context)
             movies = db.movieDao().getAllMovies()
         }
     }

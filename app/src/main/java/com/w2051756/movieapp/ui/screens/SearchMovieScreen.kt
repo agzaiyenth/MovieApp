@@ -108,11 +108,8 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
             onClick = {
                 movie?.let {
                     coroutineScope.launch(Dispatchers.IO) {
-                        Room.databaseBuilder(
-                            context,
-                            MovieDatabase::class.java,
-                            "movie_database"
-                        ).build().movieDao().insertMovie(it)
+                        val db = MovieDatabase.getInstance(context)
+                        db.movieDao().insertMovie(it)
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Saved to DB", Toast.LENGTH_SHORT).show()
                         }

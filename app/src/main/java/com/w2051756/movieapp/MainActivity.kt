@@ -120,11 +120,7 @@ fun HomeButtons(context: android.content.Context, coroutineScope: CoroutineScope
     Button(
         onClick = {
             coroutineScope.launch {
-                val db = Room.databaseBuilder(
-                    context,
-                    MovieDatabase::class.java,
-                    "movie_database"
-                ).build()
+                val db = MovieDatabase.getInstance(context)
                 db.movieDao().insertAll(hardcodedMovies)
                 Toast.makeText(context, "Successfully added to DB", Toast.LENGTH_SHORT).show()
             }

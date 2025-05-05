@@ -78,12 +78,7 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
         Button(
             onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
-                    val db = Room.databaseBuilder(
-                    context,
-                    MovieDatabase::class.java,
-                    "movie_database"
-                ).build()
-
+                    val db = MovieDatabase.getInstance(context)
                     val allMovies = db.movieDao().getAllMovies()
                     val query = actorName.trim().lowercase()
                     val filtered = allMovies.filter {
