@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.Room
 import com.w2051756.movieapp.data.local.MovieDatabase
 import com.w2051756.movieapp.data.remote.MovieApiClient
 import com.w2051756.movieapp.model.Movie
@@ -48,8 +47,34 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
     var movieTitle by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(""))
     }
-    var movie by rememberSaveable { mutableStateOf<Movie?>(null) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
+
+    // Saving movie fields individually
+    var title by rememberSaveable { mutableStateOf("") }
+    var year by rememberSaveable { mutableStateOf("") }
+    var rated by rememberSaveable { mutableStateOf("") }
+    var released by rememberSaveable { mutableStateOf("") }
+    var runtime by rememberSaveable { mutableStateOf("") }
+    var genre by rememberSaveable { mutableStateOf("") }
+    var director by rememberSaveable { mutableStateOf("") }
+    var writer by rememberSaveable { mutableStateOf("") }
+    var actors by rememberSaveable { mutableStateOf("") }
+    var plot by rememberSaveable { mutableStateOf("") }
+
+    val movie: Movie? = if (title.isNotBlank()) {
+        Movie(
+            title = title,
+            year = year,
+            rated = rated,
+            released = released,
+            runtime = runtime,
+            genre = genre,
+            director = director,
+            writer = writer,
+            actors = actors,
+            plot = plot
+        )
+    } else null
 
     val buttonColors = ButtonDefaults.buttonColors(
         containerColor = Color.LightGray,
@@ -86,13 +111,24 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
                 isLoading = true
                 coroutineScope.launch(Dispatchers.IO) {
                     val fetchedMovie = MovieApiClient.fetchMovieByTitle(movieTitle.text)
-                    hasSearched = true
                     withContext(Dispatchers.Main) {
                         isLoading = false
+                        hasSearched = true
                         if (fetchedMovie != null) {
-                            movie = fetchedMovie
+                            title = fetchedMovie.title
+                            year = fetchedMovie.year
+                            rated = fetchedMovie.rated
+                            released = fetchedMovie.released
+                            runtime = fetchedMovie.runtime
+                            genre = fetchedMovie.genre
+                            director = fetchedMovie.director
+                            writer = fetchedMovie.writer
+                            actors = fetchedMovie.actors
+                            plot = fetchedMovie.plot
                         } else {
-                            movie = null
+                            title = ""; year = ""; rated = ""; released = ""
+                            runtime = ""; genre = ""; director = ""
+                            writer = ""; actors = ""; plot = ""
                             Toast.makeText(context, "No results found", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -136,7 +172,7 @@ fun SearchMovieScreenContent(onNavigateBack: () -> Unit) {
             CircularProgressIndicator()
         } else {
             if (movie != null) {
-                MovieDetails(movie = movie!!)
+                MovieDetails(movie = movie)
             } else if (movieTitle.text.isNotBlank() && hasSearched) {
                 Text(
                     text = "No results found for \"${movieTitle.text}\"",
