@@ -68,7 +68,7 @@ fun SearchActorScreenContent(onBackPressed: () -> Unit) {
             value = actorName,
             onValueChange = {
                 actorName = it
-                hasSearched = false 
+                hasSearched = false
             },
             label = { Text("Enter actor name") },
             modifier = Modifier.fillMaxWidth(),
